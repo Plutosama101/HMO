@@ -25,6 +25,11 @@ page 50107 "Diagnosis Description Card"
                 {
                     ApplicationArea = All;
                 }
+
+                field("Unit Price"; Rec."Unit Price")
+                {
+                    ApplicationArea = All;
+                }
             }
         }
     }

@@ -28,6 +28,11 @@ page 50106 "Diagnosis Description List"
                 {
                     ApplicationArea = All;
                 }
+
+                field("Unit Price"; Rec."Unit Price")
+                {
+                    ApplicationArea = All;
+                }
             }
         }
     }

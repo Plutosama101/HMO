@@ -26,6 +26,7 @@ table 50103 "Diagnosis Description"
             Caption = 'Description';
             DataClassification = CustomerContent;
         }
+
         field(4; "Unit Price"; Decimal)
         {
             Caption = 'Unit Price';
