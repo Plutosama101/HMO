@@ -20,6 +20,7 @@ table 50102 Ward
             Caption = 'No. Series';
             TableRelation = "No. Series";
             DataClassification = CustomerContent;
+            Editable = false;
         }
 
         field(3; Description; Text[100])
@@ -63,11 +64,9 @@ table 50102 Ward
     begin
         if "Ward No." = '' then begin
             HospitalSetup.Get('SETUP');
-
             HospitalSetup.TestField("Ward Nos.");
 
             "No. Series" := HospitalSetup."Ward Nos.";
-
             "Ward No." := NoSeries.GetNextNo("No. Series", WorkDate());
         end;
     end;
