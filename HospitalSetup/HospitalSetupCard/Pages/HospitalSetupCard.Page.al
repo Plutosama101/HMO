@@ -12,6 +12,12 @@ page 50110 "Hospital Setup"
         {
             group(Numbering)
             {
+                field("Primary Key"; Rec."Primary Key")
+                {
+                    ApplicationArea = All;
+                    Visible = false;
+                }
+
                 field("Staff Nos."; Rec."Staff Nos.")
                 {
                     ApplicationArea = All;
@@ -23,6 +29,11 @@ page 50110 "Hospital Setup"
                 }
 
                 field("Ward Nos."; Rec."Ward Nos.")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Diagnostics Nos."; Rec."Diagnostics Nos.")
                 {
                     ApplicationArea = All;
                 }
