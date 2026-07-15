@@ -59,7 +59,9 @@ table 50100 "Hospital Staff"
     trigger OnInsert()
     var
         HospitalSetup: Record "Hospital Setup";
+        Employee: Record Employee;
     begin
+        // Generate Staff Number
         if "Staff No." = '' then begin
             HospitalSetup.Get('SETUP');
 
@@ -68,6 +70,15 @@ table 50100 "Hospital Staff"
             "No. Series" := HospitalSetup."Staff Nos.";
 
             "Staff No." := NoSeries.GetNextNo("No. Series", WorkDate());
+        end;
+
+        // Create Employee automatically
+        if not Employee.Get("Staff No.") then begin
+            Employee.Init();
+            Employee."No." := "Staff No.";
+            Employee."First Name" := "First Name";
+            Employee."Last Name" := "Last Name";
+            Employee.Insert(true);
         end;
     end;
 
