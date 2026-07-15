@@ -23,23 +23,58 @@ table 50105 "Diagnostics Line"
         {
             Caption = 'Type';
             DataClassification = CustomerContent;
+
+            trigger OnValidate()
+            begin
+                Clear("Test No.");
+                Clear(Description);
+                Clear("Unit Price");
+                Clear(Amount);
+            end;
         }
 
         field(4; "Test No."; Code[20])
         {
             Caption = 'Test No.';
-            TableRelation = "Diagnosis Description".Code;
             DataClassification = CustomerContent;
+
+            TableRelation = if (Type = const(" ")) "Standard Text"
+            else
+            if (Type = const(Diagnosis)) "Diagnosis Description"
+            else
+            if (Type = const(Drug)) Item
+            else
+            if (Type = const(Others)) "G/L Account";
 
             trigger OnValidate()
             var
                 DiagnosisDescription: Record "Diagnosis Description";
+                Drug: Record Item;
+                GLAccount: Record "G/L Account";
             begin
-                if DiagnosisDescription.Get("Test No.") then begin
-                    Description := DiagnosisDescription.Description;
-                    "Unit Price" := DiagnosisDescription."Unit Price";
-                    CalculateAmount();
-                end;
+                if Type = Type::Diagnosis then begin
+                    if DiagnosisDescription.Get("Test No.") then begin
+                        Description := DiagnosisDescription.Description;
+                        "Unit Price" := DiagnosisDescription."Unit Price";
+                        CalculateAmount();
+                    end;
+                end
+                else
+                    if Type = Type::Drug then begin
+                        if Drug.Get("Test No.") then begin
+                            Description := Drug.Description;
+                            "Unit Price" := Drug."Unit Price";
+                            CalculateAmount();
+                        end;
+                    end
+                    else
+                        if Type = Type::Others then begin
+                            if GLAccount.Get("Test No.") then begin
+                                Description := GLAccount.Name;
+                                "Unit Price" := 0;
+                                CalculateAmount();
+                            end;
+                        end;
             end;
         }
 

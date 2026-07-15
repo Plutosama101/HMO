@@ -2,13 +2,20 @@ enum 50104 "Diagnosis Type"
 {
     Extensible = true;
 
-    value(0; Diagnosis)
+    value(0; " ")
+    {
+        Caption = '';
+    }
+    value(1; Diagnosis)
     {
         Caption = 'Diagnosis';
     }
-
-    value(1; Treatment)
+    value(2; Drug)
     {
-        Caption = 'Treatment';
+        Caption = 'Drug';
+    }
+    value(3; Others)
+    {
+        Caption = 'Others';
     }
 }
