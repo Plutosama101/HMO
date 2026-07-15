@@ -101,25 +101,13 @@ table 50101 Patient
     trigger OnInsert()
     var
         HospitalSetup: Record "Hospital Setup";
-        Customer: Record Customer;
     begin
-        // Generate Patient Number
         if "Patient No." = '' then begin
             HospitalSetup.Get('SETUP');
             HospitalSetup.TestField("Patient Nos.");
 
             "No. Series" := HospitalSetup."Patient Nos.";
             "Patient No." := NoSeries.GetNextNo("No. Series", WorkDate());
-        end;
-
-        // Create Customer automatically
-        if not Customer.Get("Patient No.") then begin
-            Customer.Init();
-            Customer."No." := "Patient No.";
-            Customer.Name := "First Name" + ' ' + "Last Name";
-            Customer."E-Mail" := "Email Address";
-            Customer."Phone No." := "Phone Number";
-            Customer.Insert(true);
         end;
     end;
 

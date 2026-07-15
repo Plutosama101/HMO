@@ -40,4 +40,44 @@ page 50101 "Hospital Staff Card"
             }
         }
     }
+    actions
+    {
+        area(Processing)
+        {
+            action("Sync to Employee")
+            {
+                Caption = 'Sync to Employee';
+                ApplicationArea = All;
+                Image = Employee;
+                Promoted = true;
+                PromotedCategory = Process;
+                ToolTip = 'Create or update an Employee record from this Hospital Staff record.';
+
+                trigger OnAction()
+                var
+                    Employee: Record Employee;
+                begin
+                    if Employee.Get(Rec."Staff No.") then begin
+                        // Update existing employee
+                        Employee."First Name" := Rec."First Name";
+                        Employee."Last Name" := Rec."Last Name";
+
+                        Employee.Modify(true);
+
+                        Message('Employee synchronized successfully.');
+                    end else begin
+                        // Create new employee
+                        Employee.Init();
+                        Employee."No." := Rec."Staff No.";
+                        Employee."First Name" := Rec."First Name";
+                        Employee."Last Name" := Rec."Last Name";
+
+                        Employee.Insert(true);
+
+                        Message('Employee synchronized successfully.');
+                    end;
+                end;
+            }
+        }
+    }
 }
