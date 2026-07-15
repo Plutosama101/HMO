@@ -38,7 +38,7 @@ table 50105 "Diagnostics Line"
                 if DiagnosisDescription.Get("Test No.") then begin
                     Description := DiagnosisDescription.Description;
                     "Unit Price" := DiagnosisDescription."Unit Price";
-                    Amount := Quantity * "Unit Price";
+                    CalculateAmount();
                 end;
             end;
         }
@@ -46,6 +46,7 @@ table 50105 "Diagnostics Line"
         field(5; Description; Text[100])
         {
             Caption = 'Description';
+            Editable = false;
             DataClassification = CustomerContent;
         }
 
@@ -53,26 +54,23 @@ table 50105 "Diagnostics Line"
         {
             Caption = 'Quantity';
             DecimalPlaces = 0 : 2;
-            MinValue = 0;
+            MinValue = 1;
+            InitValue = 1;
             DataClassification = CustomerContent;
 
             trigger OnValidate()
             begin
-                Amount := Quantity * "Unit Price";
+                CalculateAmount();
             end;
         }
 
         field(7; "Unit Price"; Decimal)
         {
             Caption = 'Unit Price';
+            Editable = false;
             DecimalPlaces = 0 : 2;
             MinValue = 0;
             DataClassification = CustomerContent;
-
-            trigger OnValidate()
-            begin
-                Amount := Quantity * "Unit Price";
-            end;
         }
 
         field(8; Amount; Decimal)
@@ -91,4 +89,34 @@ table 50105 "Diagnostics Line"
             Clustered = true;
         }
     }
+
+    trigger OnInsert()
+    begin
+        if Quantity = 0 then
+            Quantity := 1;
+    end;
+
+    trigger OnModify()
+    begin
+        UpdateHeaderTotal();
+    end;
+
+    trigger OnDelete()
+    begin
+        UpdateHeaderTotal();
+    end;
+
+    local procedure CalculateAmount()
+    begin
+        Amount := Quantity * "Unit Price";
+        UpdateHeaderTotal();
+    end;
+
+    local procedure UpdateHeaderTotal()
+    var
+        DiagnosticsHeader: Record "Diagnostics Header";
+    begin
+        if DiagnosticsHeader.Get("Document No.") then
+            DiagnosticsHeader.UpdateTotalAmount();
+    end;
 }

@@ -34,6 +34,11 @@ page 50108 "Diagnostics List"
                     ApplicationArea = All;
                 }
 
+                field(Doctor; Rec.Doctor)
+                {
+                    ApplicationArea = All;
+                }
+
                 field(Status; Rec.Status)
                 {
                     ApplicationArea = All;

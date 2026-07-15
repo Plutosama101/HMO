@@ -4,8 +4,10 @@ page 50112 "Diagnostics Subform"
     SourceTable = "Diagnostics Line";
     ApplicationArea = All;
     Caption = 'Diagnostics Lines';
+
     AutoSplitKey = true;
     DelayedInsert = true;
+    MultipleNewLines = true;
 
     layout
     {
@@ -26,6 +28,7 @@ page 50112 "Diagnostics Subform"
                 field(Description; Rec.Description)
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
 
                 field(Quantity; Rec.Quantity)
@@ -36,11 +39,13 @@ page 50112 "Diagnostics Subform"
                 field("Unit Price"; Rec."Unit Price")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
 
                 field(Amount; Rec.Amount)
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
             }
         }

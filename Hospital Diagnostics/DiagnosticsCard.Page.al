@@ -14,6 +14,7 @@ page 50109 "Diagnostics Card"
                 field("Document No."; Rec."Document No.")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
 
                 field("Patient No."; Rec."Patient No.")
@@ -24,21 +25,25 @@ page 50109 "Diagnostics Card"
                 field("First Name"; Rec."First Name")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
 
                 field("Last Name"; Rec."Last Name")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
 
                 field("Blood Group"; Rec."Blood Group")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
 
                 field(Genotype; Rec.Genotype)
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
 
                 field("Ward No."; Rec."Ward No.")
@@ -59,7 +64,15 @@ page 50109 "Diagnostics Card"
                 field("Total Amount"; Rec."Total Amount")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
+            }
+
+            part(Lines; "Diagnostics Subform")
+            {
+                ApplicationArea = All;
+                SubPageLink = "Document No." = field("Document No.");
+                UpdatePropagation = Both;
             }
         }
     }

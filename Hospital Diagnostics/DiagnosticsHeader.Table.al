@@ -4,9 +4,8 @@ table 50104 "Diagnostics Header"
     TableType = Normal;
     DataClassification = CustomerContent;
 
-    // Uncomment after the pages have been created
-    // DrillDownPageID = "Diagnostics List";
-    // LookupPageID = "Diagnostics List";
+    DrillDownPageID = "Diagnostics List";
+    LookupPageID = "Diagnostics List";
 
     fields
     {
@@ -21,6 +20,7 @@ table 50104 "Diagnostics Header"
             Caption = 'No. Series';
             TableRelation = "No. Series";
             DataClassification = CustomerContent;
+            Editable = false;
         }
 
         field(3; "Patient No."; Code[20])
@@ -46,24 +46,28 @@ table 50104 "Diagnostics Header"
         {
             Caption = 'First Name';
             DataClassification = CustomerContent;
+            Editable = false;
         }
 
         field(5; "Last Name"; Text[100])
         {
             Caption = 'Last Name';
             DataClassification = CustomerContent;
+            Editable = false;
         }
 
         field(6; "Blood Group"; Enum "Blood Group")
         {
             Caption = 'Blood Group';
             DataClassification = CustomerContent;
+            Editable = false;
         }
 
         field(7; Genotype; Enum "Genotype")
         {
             Caption = 'Genotype';
             DataClassification = CustomerContent;
+            Editable = false;
         }
 
         field(8; "Ward No."; Code[20])
@@ -76,7 +80,8 @@ table 50104 "Diagnostics Header"
         field(9; Doctor; Code[20])
         {
             Caption = 'Doctor';
-            TableRelation = "Hospital Staff"."Staff No.";
+            TableRelation = "Hospital Staff"."Staff No."
+                where(Type = const(Doctor));
             DataClassification = CustomerContent;
         }
 
@@ -102,6 +107,20 @@ table 50104 "Diagnostics Header"
             Clustered = true;
         }
     }
+
+    trigger OnInsert()
+    var
+        HospitalSetup: Record "Hospital Setup";
+    begin
+        if "Document No." = '' then begin
+            HospitalSetup.Get('SETUP');
+            HospitalSetup.TestField("Diagnostics Nos.");
+
+            "No. Series" := HospitalSetup."Diagnostics Nos.";
+            "Document No." := NoSeries.GetNextNo("No. Series", WorkDate());
+        end;
+    end;
+
     procedure UpdateTotalAmount()
     var
         DiagnosticsLine: Record "Diagnostics Line";
@@ -117,4 +136,7 @@ table 50104 "Diagnostics Header"
 
         Modify();
     end;
+
+    var
+        NoSeries: Codeunit "No. Series";
 }
