@@ -81,6 +81,12 @@ table 50101 Patient
             Caption = 'Insurance';
             DataClassification = CustomerContent;
         }
+        field(13; "Customer No."; Code[20])
+        {
+            Caption = 'Customer No.';
+            TableRelation = Customer;
+            DataClassification = CustomerContent;
+        }
     }
 
     keys

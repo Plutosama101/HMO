@@ -41,6 +41,12 @@ table 50102 Ward
             DataClassification = CustomerContent;
             MinValue = 0;
         }
+        field(6; "G/L Account No."; Code[20])
+        {
+            Caption = 'G/L Account No.';
+            TableRelation = "G/L Account";
+            DataClassification = CustomerContent;
+        }
     }
 
     keys

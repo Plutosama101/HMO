@@ -34,6 +34,12 @@ table 50103 "Diagnosis Description"
             DecimalPlaces = 0 : 2;
             MinValue = 0;
         }
+        field(5; "G/L Account No."; Code[20])
+        {
+            Caption = 'G/L Account No.';
+            TableRelation = "G/L Account";
+            DataClassification = CustomerContent;
+        }
     }
 
     keys

@@ -44,12 +44,14 @@ table 50105 "Diagnostics Line"
             else
             if (Type = const(Drug)) Item
             else
+            if (Type = const(Ward)) Ward
+            else
             if (Type = const(Others)) "G/L Account";
-
             trigger OnValidate()
             var
                 DiagnosisDescription: Record "Diagnosis Description";
                 Drug: Record Item;
+                Ward: Record Ward;
                 GLAccount: Record "G/L Account";
             begin
                 if Type = Type::Diagnosis then begin
@@ -68,16 +70,23 @@ table 50105 "Diagnostics Line"
                         end;
                     end
                     else
-                        if Type = Type::Others then begin
-                            if GLAccount.Get("Test No.") then begin
-                                Description := GLAccount.Name;
+                        if Type = Type::Ward then begin
+                            if Ward.Get("Test No.") then begin
+                                Description := Ward.Description;
                                 "Unit Price" := 0;
                                 CalculateAmount();
                             end;
-                        end;
+                        end
+                        else
+                            if Type = Type::Others then begin
+                                if GLAccount.Get("Test No.") then begin
+                                    Description := GLAccount.Name;
+                                    "Unit Price" := 0;
+                                    CalculateAmount();
+                                end;
+                            end;
             end;
         }
-
         field(5; Description; Text[100])
         {
             Caption = 'Description';

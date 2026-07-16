@@ -1,4 +1,4 @@
-table 50157 Drug
+table 50107 Drug
 {
     Caption = 'Drug';
     DataClassification = CustomerContent;

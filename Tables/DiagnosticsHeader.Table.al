@@ -98,6 +98,12 @@ table 50104 "Diagnostics Header"
             DecimalPlaces = 0 : 2;
             DataClassification = CustomerContent;
         }
+        field(12; "Invoice No."; Code[20])
+        {
+            Caption = 'Invoice No.';
+            Editable = false;
+            DataClassification = CustomerContent;
+        }
     }
 
     keys
