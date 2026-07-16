@@ -37,6 +37,11 @@ page 50110 "Hospital Setup"
                 {
                     ApplicationArea = All;
                 }
+
+                field("Drug Nos."; Rec."Drug Nos.")
+                {
+                    ApplicationArea = All;
+                }
             }
         }
     }

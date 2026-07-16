@@ -42,6 +42,12 @@ table 50110 "Hospital Setup"
             TableRelation = "No. Series";
             DataClassification = CustomerContent;
         }
+        field(6; "Drug Nos."; Code[20])
+        {
+            Caption = 'Drug Nos.';
+            TableRelation = "No. Series";
+            DataClassification = CustomerContent;
+        }
     }
 
     keys
