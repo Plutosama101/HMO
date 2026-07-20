@@ -50,7 +50,7 @@ table 50105 "Diagnostics Line"
             trigger OnValidate()
             var
                 DiagnosisDescription: Record "Diagnosis Description";
-                Drug: Record Item;
+                Item: Record Item;
                 Ward: Record Ward;
                 GLAccount: Record "G/L Account";
             begin
@@ -58,23 +58,20 @@ table 50105 "Diagnostics Line"
                     if DiagnosisDescription.Get("Test No.") then begin
                         Description := DiagnosisDescription.Description;
                         "Unit Price" := DiagnosisDescription."Unit Price";
-                        CalculateAmount();
                     end;
                 end
                 else
                     if Type = Type::Drug then begin
-                        if Drug.Get("Test No.") then begin
-                            Description := Drug.Description;
-                            "Unit Price" := Drug."Unit Price";
-                            CalculateAmount();
+                        if Item.Get("Test No.") then begin
+                            Description := Item.Description;
+                            "Unit Price" := Item."Unit Price";
                         end;
                     end
                     else
                         if Type = Type::Ward then begin
                             if Ward.Get("Test No.") then begin
                                 Description := Ward.Description;
-                                "Unit Price" := 0;
-                                CalculateAmount();
+                                "Unit Price" := 0; // or use a ward price if you add one later
                             end;
                         end
                         else
@@ -82,9 +79,10 @@ table 50105 "Diagnostics Line"
                                 if GLAccount.Get("Test No.") then begin
                                     Description := GLAccount.Name;
                                     "Unit Price" := 0;
-                                    CalculateAmount();
                                 end;
                             end;
+
+                CalculateAmount();
             end;
         }
         field(5; Description; Text[100])

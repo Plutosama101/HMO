@@ -71,9 +71,16 @@ page 50103 "Patient Card"
                 {
                     ApplicationArea = All;
                 }
+
+                field("Customer No."; Rec."Customer No.")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
             }
         }
     }
+
     actions
     {
         area(Processing)
@@ -91,24 +98,31 @@ page 50103 "Patient Card"
                     Customer: Record Customer;
                 begin
                     if Customer.Get(Rec."Patient No.") then begin
-                        Customer.Name := StrSubstNo('%1 %2', Rec."First Name", Rec."Last Name");
-                        Customer."E-Mail" := Rec."Email Address";
-                        Customer."Phone No." := Rec."Phone Number";
+                        Customer.Validate(Name, StrSubstNo('%1 %2', Rec."First Name", Rec."Last Name"));
+                        Customer.Validate("E-Mail", Rec."Email Address");
+                        Customer.Validate("Phone No.", Rec."Phone Number");
 
                         Customer.Modify(true);
-
-                        Message('Customer updated successfully.');
                     end else begin
                         Customer.Init();
-                        Customer."No." := Rec."Patient No.";
-                        Customer.Name := StrSubstNo('%1 %2', Rec."First Name", Rec."Last Name");
-                        Customer."E-Mail" := Rec."Email Address";
-                        Customer."Phone No." := Rec."Phone Number";
+
+                        Customer.Validate("No.", Rec."Patient No.");
+                        Customer.Validate(Name, StrSubstNo('%1 %2', Rec."First Name", Rec."Last Name"));
+                        Customer.Validate("E-Mail", Rec."Email Address");
+                        Customer.Validate("Phone No.", Rec."Phone Number");
+
+                        // Default Posting Groups
+                        Customer.Validate("Customer Posting Group", 'DOMESTIC');
+                        Customer.Validate("Gen. Bus. Posting Group", 'DOMESTIC');
+                        Customer.Validate("VAT Bus. Posting Group", 'DOMESTIC');
 
                         Customer.Insert(true);
-
-                        Message('Customer created successfully.');
                     end;
+
+                    Rec."Customer No." := Customer."No.";
+                    Rec.Modify(true);
+
+                    Message('Customer synchronized successfully.');
                 end;
             }
         }

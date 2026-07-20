@@ -104,6 +104,12 @@ table 50104 "Diagnostics Header"
             Editable = false;
             DataClassification = CustomerContent;
         }
+        field(13; "Sales Order No."; Code[20])
+        {
+            Caption = 'Sales Order No.';
+            Editable = false;
+            DataClassification = CustomerContent;
+        }
     }
 
     keys

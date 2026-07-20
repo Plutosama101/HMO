@@ -76,4 +76,25 @@ page 50109 "Diagnostics Card"
             }
         }
     }
+
+    actions
+    {
+        area(Processing)
+        {
+            action(CreateSalesOrder)
+            {
+                Caption = 'Create Sales Order';
+                Image = Order;
+                ApplicationArea = All;
+
+                trigger OnAction()
+                var
+                    DiagnosticsSalesSync: Codeunit "Diagnostics Sales Sync";
+                begin
+                    DiagnosticsSalesSync.Run(Rec);
+                    CurrPage.Update(false);
+                end;
+            }
+        }
+    }
 }

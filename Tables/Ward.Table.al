@@ -47,6 +47,12 @@ table 50102 Ward
             TableRelation = "G/L Account";
             DataClassification = CustomerContent;
         }
+        field(7; "Unit Price"; Decimal)
+        {
+            Caption = 'Unit Price';
+            DecimalPlaces = 0 : 2;
+            MinValue = 0;
+        }
     }
 
     keys
