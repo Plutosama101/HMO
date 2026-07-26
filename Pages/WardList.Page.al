@@ -38,6 +38,58 @@ page 50104 "Ward List"
                 {
                     ApplicationArea = All;
                 }
+
+                field("Order Quantity"; Rec."Order Quantity")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Location Code"; Rec."Location Code")
+                {
+                    ApplicationArea = All;
+                }
+            }
+        }
+    }
+
+    actions
+    {
+        area(Processing)
+        {
+            action(CreateSalesOrder)
+            {
+                Caption = 'Create Sales Order';
+                ApplicationArea = All;
+                Image = SalesOrder;
+                Promoted = true;
+                PromotedCategory = Process;
+                ToolTip = 'Creates a Sales Order for the selected ward.';
+
+                trigger OnAction()
+                var
+                    WardSalesOrderSync: Codeunit "Ward Sales Order Sync";
+                begin
+                    WardSalesOrderSync.Run(Rec);
+                    Message('Sales Order created successfully.');
+                end;
+            }
+
+            action(NewWard)
+            {
+                Caption = 'New Ward';
+                ApplicationArea = All;
+                Image = New;
+                Promoted = true;
+                PromotedCategory = New;
+                ToolTip = 'Creates a new ward.';
+
+                trigger OnAction()
+                var
+                    Ward: Record Ward;
+                begin
+                    Clear(Ward);
+                    Page.RunModal(Page::"Ward Card", Ward);
+                end;
             }
         }
     }

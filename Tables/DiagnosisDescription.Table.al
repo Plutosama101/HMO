@@ -41,6 +41,12 @@ table 50103 "Diagnosis Description"
             TableRelation = "G/L Account";
             DataClassification = CustomerContent;
         }
+
+        field(6; Treatment; Text[250])
+        {
+            Caption = 'Treatment';
+            DataClassification = CustomerContent;
+        }
     }
 
     keys
@@ -59,7 +65,7 @@ table 50103 "Diagnosis Description"
     }
 
     // ===========================
-    // NEW TRIGGERS
+    // TRIGGERS
     // ===========================
 
     trigger OnInsert()

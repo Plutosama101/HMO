@@ -38,6 +38,12 @@ table 50115 "Diagnosis Description 1"
             TableRelation = "G/L Account"."No.";
             DataClassification = CustomerContent;
         }
+
+        field(6; Treatment; Text[250])
+        {
+            Caption = 'Treatment';
+            DataClassification = CustomerContent;
+        }
     }
 
     keys
