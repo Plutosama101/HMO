@@ -46,51 +46,69 @@ table 50105 "Diagnostics Line"
             else
             if (Type = const(Ward)) Ward
             else
-            if (Type = const(Others)) "G/L Account";
+            if (Type = const(Others)) Item;
+
+
             trigger OnValidate()
             var
                 DiagnosisDescription: Record "Diagnosis Description";
                 Item: Record Item;
                 Ward: Record Ward;
-                GLAccount: Record "G/L Account";
             begin
-                if Type = Type::Diagnosis then begin
-                    if DiagnosisDescription.Get("Test No.") then begin
-                        Description := DiagnosisDescription.Description;
-                        "Unit Price" := DiagnosisDescription."Unit Price";
-                    end;
-                end
-                else
-                    if Type = Type::Drug then begin
-                        if Item.Get("Test No.") then begin
-                            Description := Item.Description;
-                            "Unit Price" := Item."Unit Price";
+
+                case Type of
+
+                    Type::Diagnosis:
+                        begin
+                            if DiagnosisDescription.Get("Test No.") then begin
+                                Description := DiagnosisDescription.Description;
+                                "Unit Price" := DiagnosisDescription."Unit Price";
+                            end;
                         end;
-                    end
-                    else
-                        if Type = Type::Ward then begin
+
+
+                    Type::Drug:
+                        begin
+                            if Item.Get("Test No.") then begin
+                                Description := Item.Description;
+                                "Unit Price" := Item."Unit Price";
+                            end;
+                        end;
+
+
+                    Type::Ward:
+                        begin
                             if Ward.Get("Test No.") then begin
                                 Description := Ward.Description;
-                                "Unit Price" := 0; // or use a ward price if you add one later
+                                "Unit Price" := Ward."Unit Price";
                             end;
-                        end
-                        else
-                            if Type = Type::Others then begin
-                                if GLAccount.Get("Test No.") then begin
-                                    Description := GLAccount.Name;
-                                    "Unit Price" := 0;
-                                end;
+                        end;
+
+
+                    Type::Others:
+                        begin
+                            if Item.Get("Test No.") then begin
+                                Description := Item.Description;
+                                "Unit Price" := Item."Unit Price";
                             end;
+                        end;
+
+                end;
+
 
                 CalculateAmount();
+
             end;
         }
+
+
         field(5; Description; Text[100])
         {
             Caption = 'Description';
             Editable = false;
             DataClassification = CustomerContent;
         }
+
 
         field(6; Quantity; Decimal)
         {
@@ -100,11 +118,13 @@ table 50105 "Diagnostics Line"
             InitValue = 1;
             DataClassification = CustomerContent;
 
+
             trigger OnValidate()
             begin
                 CalculateAmount();
             end;
         }
+
 
         field(7; "Unit Price"; Decimal)
         {
@@ -115,6 +135,7 @@ table 50105 "Diagnostics Line"
             DataClassification = CustomerContent;
         }
 
+
         field(8; Amount; Decimal)
         {
             Caption = 'Amount';
@@ -122,7 +143,9 @@ table 50105 "Diagnostics Line"
             DecimalPlaces = 0 : 2;
             DataClassification = CustomerContent;
         }
+
     }
+
 
     keys
     {
@@ -132,33 +155,31 @@ table 50105 "Diagnostics Line"
         }
     }
 
+
     trigger OnInsert()
+    var
+        DiagnosticsHeader: Record "Diagnostics Header";
+        DiagnosticsSalesSync: Codeunit "Diagnostics Sales Sync";
     begin
+
         if Quantity = 0 then
             Quantity := 1;
+
+
+        CalculateAmount();
+
+
+        // Automatically update Sales Order
+        if DiagnosticsHeader.Get("Document No.") then
+            DiagnosticsSalesSync.Run(DiagnosticsHeader);
+
     end;
 
-    trigger OnModify()
-    begin
-        UpdateHeaderTotal();
-    end;
 
-    trigger OnDelete()
-    begin
-        UpdateHeaderTotal();
-    end;
 
     local procedure CalculateAmount()
     begin
         Amount := Quantity * "Unit Price";
-        UpdateHeaderTotal();
     end;
 
-    local procedure UpdateHeaderTotal()
-    var
-        DiagnosticsHeader: Record "Diagnostics Header";
-    begin
-        if DiagnosticsHeader.Get("Document No.") then
-            DiagnosticsHeader.UpdateTotalAmount();
-    end;
 }

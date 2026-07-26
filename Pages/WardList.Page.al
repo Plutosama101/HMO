@@ -33,6 +33,11 @@ page 50104 "Ward List"
                 {
                     ApplicationArea = All;
                 }
+
+                field("Unit Price"; Rec."Unit Price")
+                {
+                    ApplicationArea = All;
+                }
             }
         }
     }

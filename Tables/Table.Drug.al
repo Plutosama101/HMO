@@ -45,6 +45,20 @@ table 50107 Drug
             DataClassification = CustomerContent;
             Editable = false;
         }
+        field(7; "Unit Price"; Decimal)
+        {
+            Caption = 'Unit Price';
+            DataClassification = CustomerContent;
+            DecimalPlaces = 0 : 2;
+            MinValue = 0;
+        }
+        field(8; Quantity; Decimal)
+        {
+            Caption = 'Quantity';
+            DataClassification = CustomerContent;
+            DecimalPlaces = 0 : 5;
+            MinValue = 0;
+        }
     }
 
     keys

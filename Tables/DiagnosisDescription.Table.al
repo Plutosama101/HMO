@@ -34,6 +34,7 @@ table 50103 "Diagnosis Description"
             DecimalPlaces = 0 : 2;
             MinValue = 0;
         }
+
         field(5; "G/L Account No."; Code[20])
         {
             Caption = 'G/L Account No.';
@@ -56,4 +57,22 @@ table 50103 "Diagnosis Description"
         {
         }
     }
+
+    // ===========================
+    // NEW TRIGGERS
+    // ===========================
+
+    trigger OnInsert()
+    var
+        DiagnosisItemSync: Codeunit "Diagnosis Item Sync";
+    begin
+        DiagnosisItemSync.SyncToItem(Rec);
+    end;
+
+    trigger OnModify()
+    var
+        DiagnosisItemSync: Codeunit "Diagnosis Item Sync";
+    begin
+        DiagnosisItemSync.SyncToItem(Rec);
+    end;
 }

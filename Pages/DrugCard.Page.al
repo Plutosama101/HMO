@@ -34,6 +34,15 @@ page 50149 "Drug Card"
                 {
                     ApplicationArea = All;
                 }
+                field("Unit Price"; Rec."Unit Price")
+                {
+                    ApplicationArea = All;
+                }
+
+                field(Quantity; Rec.Quantity)
+                {
+                    ApplicationArea = All;
+                }
             }
         }
     }
@@ -50,7 +59,7 @@ page 50149 "Drug Card"
                 var
                     DrugItemSync: Codeunit "Drug Item Sync";
                 begin
-                    DrugItemSync.Run(Rec);
+                    // DrugItemSync.Run(Rec);
                     CurrPage.Update(false);
                     Message('Item %1 has been created/updated.', Rec."Item No");
                 end;

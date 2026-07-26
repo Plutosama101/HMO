@@ -19,8 +19,8 @@ table 50104 "Diagnostics Header"
         {
             Caption = 'No. Series';
             TableRelation = "No. Series";
-            DataClassification = CustomerContent;
             Editable = false;
+            DataClassification = CustomerContent;
         }
 
         field(3; "Patient No."; Code[20])
@@ -45,29 +45,29 @@ table 50104 "Diagnostics Header"
         field(4; "First Name"; Text[100])
         {
             Caption = 'First Name';
-            DataClassification = CustomerContent;
             Editable = false;
+            DataClassification = CustomerContent;
         }
 
         field(5; "Last Name"; Text[100])
         {
             Caption = 'Last Name';
-            DataClassification = CustomerContent;
             Editable = false;
+            DataClassification = CustomerContent;
         }
 
         field(6; "Blood Group"; Enum "Blood Group")
         {
             Caption = 'Blood Group';
-            DataClassification = CustomerContent;
             Editable = false;
+            DataClassification = CustomerContent;
         }
 
         field(7; Genotype; Enum "Genotype")
         {
             Caption = 'Genotype';
-            DataClassification = CustomerContent;
             Editable = false;
+            DataClassification = CustomerContent;
         }
 
         field(8; "Ward No."; Code[20])
@@ -94,16 +94,18 @@ table 50104 "Diagnostics Header"
         field(11; "Total Amount"; Decimal)
         {
             Caption = 'Total Amount';
+            FieldClass = FlowField;
+            CalcFormula = Sum("Diagnostics Line".Amount WHERE("Document No." = FIELD("Document No.")));
             Editable = false;
-            DecimalPlaces = 0 : 2;
-            DataClassification = CustomerContent;
         }
+
         field(12; "Invoice No."; Code[20])
         {
             Caption = 'Invoice No.';
             Editable = false;
             DataClassification = CustomerContent;
         }
+
         field(13; "Sales Order No."; Code[20])
         {
             Caption = 'Sales Order No.';
@@ -131,22 +133,6 @@ table 50104 "Diagnostics Header"
             "No. Series" := HospitalSetup."Diagnostics Nos.";
             "Document No." := NoSeries.GetNextNo("No. Series", WorkDate());
         end;
-    end;
-
-    procedure UpdateTotalAmount()
-    var
-        DiagnosticsLine: Record "Diagnostics Line";
-    begin
-        "Total Amount" := 0;
-
-        DiagnosticsLine.SetRange("Document No.", "Document No.");
-
-        if DiagnosticsLine.FindSet() then
-            repeat
-                "Total Amount" += DiagnosticsLine.Amount;
-            until DiagnosticsLine.Next() = 0;
-
-        Modify();
     end;
 
     var

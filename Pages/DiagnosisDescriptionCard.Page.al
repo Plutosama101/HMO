@@ -1,36 +1,50 @@
-page 50107 "Diagnosis Description Card"
+table 50115 "Diagnosis Description 1"
 {
-    PageType = Card;
-    SourceTable = "Diagnosis Description";
-    ApplicationArea = All;
     Caption = 'Diagnosis Description';
+    TableType = Normal;
+    DataClassification = CustomerContent;
 
-    layout
+    fields
     {
-        area(Content)
+        field(1; Code; Code[20])
         {
-            group(General)
-            {
-                field(Code; Rec.Code)
-                {
-                    ApplicationArea = All;
-                }
+            Caption = 'Code';
+            DataClassification = CustomerContent;
+        }
 
-                field(Type; Rec.Type)
-                {
-                    ApplicationArea = All;
-                }
+        field(2; Type; Enum "Diagnosis Type")
+        {
+            Caption = 'Type';
+            DataClassification = CustomerContent;
+        }
 
-                field(Description; Rec.Description)
-                {
-                    ApplicationArea = All;
-                }
+        field(3; Description; Text[100])
+        {
+            Caption = 'Description';
+            DataClassification = CustomerContent;
+        }
 
-                field("Unit Price"; Rec."Unit Price")
-                {
-                    ApplicationArea = All;
-                }
-            }
+        field(4; "Unit Price"; Decimal)
+        {
+            Caption = 'Unit Price';
+            DecimalPlaces = 0 : 2;
+            MinValue = 0;
+            DataClassification = CustomerContent;
+        }
+
+        field(5; "G/L Account No."; Code[20])
+        {
+            Caption = 'G/L Account No.';
+            TableRelation = "G/L Account"."No.";
+            DataClassification = CustomerContent;
+        }
+    }
+
+    keys
+    {
+        key(PK; Code)
+        {
+            Clustered = true;
         }
     }
 }

@@ -6,7 +6,7 @@ page 50106 "Diagnosis Description List"
     UsageCategory = Lists;
     Caption = 'Diagnosis Descriptions';
 
-    CardPageId = "Diagnosis Description Card";
+    // CardPageId = "Diagnosis Description Card";
 
     layout
     {
@@ -30,6 +30,10 @@ page 50106 "Diagnosis Description List"
                 }
 
                 field("Unit Price"; Rec."Unit Price")
+                {
+                    ApplicationArea = All;
+                }
+                field("G/L Account No."; Rec."G/L Account No.")
                 {
                     ApplicationArea = All;
                 }
