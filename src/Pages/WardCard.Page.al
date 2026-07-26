@@ -37,6 +37,12 @@ page 50105 "Ward Card"
                     ApplicationArea = All;
                 }
 
+                field("G/L Account No."; Rec."G/L Account No.")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the G/L Account used when creating the ward sales order.';
+                }
+
                 field("Unit Price"; Rec."Unit Price")
                 {
                     ApplicationArea = All;
@@ -45,7 +51,7 @@ page 50105 "Ward Card"
                 field("Order Quantity"; Rec."Order Quantity")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the default quantity to use when creating purchase or sales documents for this ward.';
+                    ToolTip = 'Specifies the quantity to use when creating the sales order.';
                 }
 
                 field("Location Code"; Rec."Location Code")
@@ -65,7 +71,7 @@ page 50105 "Ward Card"
             {
                 Caption = 'Create Sales Order';
                 ApplicationArea = All;
-                Image = SalesOrder;
+                Image = Order;
                 Promoted = true;
                 PromotedCategory = Process;
                 ToolTip = 'Creates a Sales Order for the selected ward.';
@@ -76,24 +82,6 @@ page 50105 "Ward Card"
                 begin
                     WardSalesOrderSync.Run(Rec);
                     Message('Sales Order created successfully.');
-                end;
-            }
-
-            action(NewWard)
-            {
-                Caption = 'New Ward';
-                ApplicationArea = All;
-                Image = New;
-                Promoted = true;
-                PromotedCategory = New;
-                ToolTip = 'Create a new ward.';
-
-                trigger OnAction()
-                var
-                    Ward: Record Ward;
-                begin
-                    Clear(Ward);
-                    Page.RunModal(Page::"Ward Card", Ward);
                 end;
             }
         }

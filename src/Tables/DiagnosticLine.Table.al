@@ -30,6 +30,9 @@ table 50105 "Diagnostics Line"
                 Clear(Description);
                 Clear("Unit Price");
                 Clear(Amount);
+
+                if Type <> Type::Ward then
+                    Quantity := 1;
             end;
         }
 
@@ -38,7 +41,8 @@ table 50105 "Diagnostics Line"
             Caption = 'Test No.';
             DataClassification = CustomerContent;
 
-            TableRelation = if (Type = const(" ")) "Standard Text"
+            TableRelation =
+                if (Type = const(" ")) "Standard Text"
             else
             if (Type = const(Diagnosis)) "Diagnosis Description"
             else
@@ -48,16 +52,13 @@ table 50105 "Diagnostics Line"
             else
             if (Type = const(Others)) Item;
 
-
             trigger OnValidate()
             var
                 DiagnosisDescription: Record "Diagnosis Description";
                 Item: Record Item;
                 Ward: Record Ward;
             begin
-
                 case Type of
-
                     Type::Diagnosis:
                         begin
                             if DiagnosisDescription.Get("Test No.") then begin
@@ -65,7 +66,6 @@ table 50105 "Diagnostics Line"
                                 "Unit Price" := DiagnosisDescription."Unit Price";
                             end;
                         end;
-
 
                     Type::Drug:
                         begin
@@ -75,15 +75,18 @@ table 50105 "Diagnostics Line"
                             end;
                         end;
 
-
                     Type::Ward:
                         begin
                             if Ward.Get("Test No.") then begin
                                 Description := Ward.Description;
                                 "Unit Price" := Ward."Unit Price";
+
+                                if Ward."Order Quantity" > 0 then
+                                    Quantity := Ward."Order Quantity"
+                                else
+                                    Quantity := 1;
                             end;
                         end;
-
 
                     Type::Others:
                         begin
@@ -92,15 +95,11 @@ table 50105 "Diagnostics Line"
                                 "Unit Price" := Item."Unit Price";
                             end;
                         end;
-
                 end;
 
-
                 CalculateAmount();
-
             end;
         }
-
 
         field(5; Description; Text[100])
         {
@@ -108,7 +107,6 @@ table 50105 "Diagnostics Line"
             Editable = false;
             DataClassification = CustomerContent;
         }
-
 
         field(6; Quantity; Decimal)
         {
@@ -118,13 +116,11 @@ table 50105 "Diagnostics Line"
             InitValue = 1;
             DataClassification = CustomerContent;
 
-
             trigger OnValidate()
             begin
                 CalculateAmount();
             end;
         }
-
 
         field(7; "Unit Price"; Decimal)
         {
@@ -135,7 +131,6 @@ table 50105 "Diagnostics Line"
             DataClassification = CustomerContent;
         }
 
-
         field(8; Amount; Decimal)
         {
             Caption = 'Amount';
@@ -143,9 +138,7 @@ table 50105 "Diagnostics Line"
             DecimalPlaces = 0 : 2;
             DataClassification = CustomerContent;
         }
-
     }
-
 
     keys
     {
@@ -155,31 +148,22 @@ table 50105 "Diagnostics Line"
         }
     }
 
-
     trigger OnInsert()
     var
         DiagnosticsHeader: Record "Diagnostics Header";
         DiagnosticsSalesSync: Codeunit "Diagnostics Sales Sync";
     begin
-
         if Quantity = 0 then
             Quantity := 1;
 
-
         CalculateAmount();
 
-
-        // Automatically update Sales Order
         if DiagnosticsHeader.Get("Document No.") then
             DiagnosticsSalesSync.Run(DiagnosticsHeader);
-
     end;
-
-
 
     local procedure CalculateAmount()
     begin
         Amount := Quantity * "Unit Price";
     end;
-
 }

@@ -34,6 +34,11 @@ page 50104 "Ward List"
                     ApplicationArea = All;
                 }
 
+                field("G/L Account No."; Rec."G/L Account No.")
+                {
+                    ApplicationArea = All;
+                }
+
                 field("Unit Price"; Rec."Unit Price")
                 {
                     ApplicationArea = All;
@@ -60,7 +65,7 @@ page 50104 "Ward List"
             {
                 Caption = 'Create Sales Order';
                 ApplicationArea = All;
-                Image = SalesOrder;
+                Image = Order;
                 Promoted = true;
                 PromotedCategory = Process;
                 ToolTip = 'Creates a Sales Order for the selected ward.';
@@ -71,24 +76,6 @@ page 50104 "Ward List"
                 begin
                     WardSalesOrderSync.Run(Rec);
                     Message('Sales Order created successfully.');
-                end;
-            }
-
-            action(NewWard)
-            {
-                Caption = 'New Ward';
-                ApplicationArea = All;
-                Image = New;
-                Promoted = true;
-                PromotedCategory = New;
-                ToolTip = 'Creates a new ward.';
-
-                trigger OnAction()
-                var
-                    Ward: Record Ward;
-                begin
-                    Clear(Ward);
-                    Page.RunModal(Page::"Ward Card", Ward);
                 end;
             }
         }
