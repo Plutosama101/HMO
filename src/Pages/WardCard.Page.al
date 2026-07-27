@@ -40,7 +40,7 @@ page 50105 "Ward Card"
                 field("G/L Account No."; Rec."G/L Account No.")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the G/L Account used when creating the ward sales order.';
+                    ToolTip = 'Specifies the G/L Account used when this ward is billed.';
                 }
 
                 field("Unit Price"; Rec."Unit Price")
@@ -51,13 +51,13 @@ page 50105 "Ward Card"
                 field("Order Quantity"; Rec."Order Quantity")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the quantity to use when creating the sales order.';
+                    ToolTip = 'Specifies the default quantity when this ward is added to a diagnostics document.';
                 }
 
                 field("Location Code"; Rec."Location Code")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the Business Central location associated with this ward.';
+                    ToolTip = 'Specifies the location associated with this ward.';
                 }
             }
         }
@@ -67,21 +67,54 @@ page 50105 "Ward Card"
     {
         area(Processing)
         {
-            action(CreateSalesOrder)
+            action(NewWard)
             {
-                Caption = 'Create Sales Order';
+                Caption = 'New Ward';
                 ApplicationArea = All;
-                Image = Order;
+                Image = New;
                 Promoted = true;
-                PromotedCategory = Process;
-                ToolTip = 'Creates a Sales Order for the selected ward.';
+                PromotedCategory = New;
 
                 trigger OnAction()
                 var
-                    WardSalesOrderSync: Codeunit "Ward Sales Order Sync";
+                    NewWard: Record Ward;
                 begin
-                    WardSalesOrderSync.Run(Rec);
-                    Message('Sales Order created successfully.');
+                    Clear(NewWard);
+                    Page.RunModal(Page::"Ward Card", NewWard);
+                end;
+            }
+
+            action(UpdateWard)
+            {
+                Caption = 'Update Ward';
+                ApplicationArea = All;
+                Image = EditLines;
+                Promoted = true;
+                PromotedCategory = Process;
+
+                trigger OnAction()
+                begin
+                    CurrPage.SaveRecord();
+                    Message('Ward updated successfully.');
+                end;
+            }
+
+            action(SyncWard)
+            {
+                Caption = 'Sync Ward';
+                ApplicationArea = All;
+                Image = Refresh;
+                Promoted = true;
+                PromotedCategory = Process;
+                ToolTip = 'Synchronizes this ward with its corresponding Business Central Item.';
+
+                trigger OnAction()
+                var
+                    WardSync: Codeunit "Ward Sync";
+                begin
+                    CurrPage.SaveRecord();
+                    WardSync.SyncToItem(Rec);
+                    Message('Ward synchronized successfully.');
                 end;
             }
         }

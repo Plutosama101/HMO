@@ -90,6 +90,7 @@ table 50102 Ward
     trigger OnInsert()
     var
         HospitalSetup: Record "Hospital Setup";
+        WardSync: Codeunit "Ward Sync";
     begin
         if "Ward No." = '' then begin
             HospitalSetup.Get('SETUP');
@@ -98,6 +99,15 @@ table 50102 Ward
             "No. Series" := HospitalSetup."Ward Nos.";
             "Ward No." := NoSeries.GetNextNo("No. Series", WorkDate());
         end;
+
+        WardSync.SyncToItem(Rec);
+    end;
+
+    trigger OnModify()
+    var
+        WardSync: Codeunit "Ward Sync";
+    begin
+        WardSync.SyncToItem(Rec);
     end;
 
     var

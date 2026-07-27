@@ -56,28 +56,4 @@ page 50104 "Ward List"
             }
         }
     }
-
-    actions
-    {
-        area(Processing)
-        {
-            action(CreateSalesOrder)
-            {
-                Caption = 'Create Sales Order';
-                ApplicationArea = All;
-                Image = Order;
-                Promoted = true;
-                PromotedCategory = Process;
-                ToolTip = 'Creates a Sales Order for the selected ward.';
-
-                trigger OnAction()
-                var
-                    WardSalesOrderSync: Codeunit "Ward Sales Order Sync";
-                begin
-                    WardSalesOrderSync.Run(Rec);
-                    Message('Sales Order created successfully.');
-                end;
-            }
-        }
-    }
 }

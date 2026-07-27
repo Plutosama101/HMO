@@ -40,31 +40,28 @@ codeunit 50121 "Diagnostics Sales Sync"
 
         end;
 
-
         // Sync diagnostics lines
         SyncSalesLines(
             DiagnosticsHeader,
             SalesHeader);
     end;
 
-
-
     local procedure SyncSalesLines(
         DiagnosticsHeader: Record "Diagnostics Header";
         SalesHeader: Record "Sales Header")
     var
         DiagnosticsLine: Record "Diagnostics Line";
+        DiagnosisDescription: Record "Diagnosis Description";
+        Ward: Record Ward;
         SalesLine: Record "Sales Line";
         NextLineNo: Integer;
     begin
 
         NextLineNo := GetLastSalesLineNo(SalesHeader);
 
-
         DiagnosticsLine.SetRange(
             "Document No.",
             DiagnosticsHeader."Document No.");
-
 
         if DiagnosticsLine.FindSet() then begin
 
@@ -75,9 +72,7 @@ codeunit 50121 "Diagnostics Sales Sync"
                     SalesHeader,
                     DiagnosticsLine) then begin
 
-
                     NextLineNo += 10000;
-
 
                     SalesLine.Init();
 
@@ -85,24 +80,18 @@ codeunit 50121 "Diagnostics Sales Sync"
                         "Document Type",
                         SalesHeader."Document Type");
 
-
                     SalesLine.Validate(
                         "Document No.",
                         SalesHeader."No.");
-
 
                     SalesLine.Validate(
                         "Line No.",
                         NextLineNo);
 
-
-
                     case DiagnosticsLine.Type of
-
 
                         DiagnosticsLine.Type::Drug,
                         DiagnosticsLine.Type::Others:
-
                             begin
                                 SalesLine.Validate(
                                     Type,
@@ -113,108 +102,93 @@ codeunit 50121 "Diagnostics Sales Sync"
                                     DiagnosticsLine."Test No.");
                             end;
 
-
-
-                        DiagnosticsLine.Type::Diagnosis,
-                        DiagnosticsLine.Type::Ward:
-
+                        DiagnosticsLine.Type::Diagnosis:
                             begin
+                                DiagnosisDescription.Get(DiagnosticsLine."Test No.");
+
                                 SalesLine.Validate(
                                     Type,
                                     SalesLine.Type::"G/L Account");
 
                                 SalesLine.Validate(
                                     "No.",
-                                    DiagnosticsLine."Test No.");
+                                    DiagnosisDescription."G/L Account No.");
                             end;
 
+                        DiagnosticsLine.Type::Ward:
+                            begin
+                                Ward.Get(DiagnosticsLine."Test No.");
+
+                                SalesLine.Validate(
+                                    Type,
+                                    SalesLine.Type::"G/L Account");
+
+                                SalesLine.Validate(
+                                    "No.",
+                                    Ward."G/L Account No.");
+                            end;
                     end;
-
-
 
                     SalesLine.Validate(
                         Description,
                         DiagnosticsLine.Description);
 
-
                     SalesLine.Validate(
                         Quantity,
                         DiagnosticsLine.Quantity);
-
 
                     SalesLine.Validate(
                         "Unit Price",
                         DiagnosticsLine."Unit Price");
 
-
                     SalesLine.Insert(true);
 
                 end;
 
-
             until DiagnosticsLine.Next() = 0;
 
         end;
-
     end;
-
-
-
 
     local procedure GetLastSalesLineNo(
         SalesHeader: Record "Sales Header"): Integer
-
     var
         SalesLine: Record "Sales Line";
-
     begin
 
         SalesLine.SetRange(
             "Document Type",
             SalesHeader."Document Type");
 
-
         SalesLine.SetRange(
             "Document No.",
             SalesHeader."No.");
-
 
         if SalesLine.FindLast() then
             exit(SalesLine."Line No.");
 
         exit(0);
-
     end;
-
-
-
-
 
     local procedure SalesLineExists(
         SalesHeader: Record "Sales Header";
         DiagnosticsLine: Record "Diagnostics Line"): Boolean
-
     var
         SalesLine: Record "Sales Line";
-
     begin
 
         SalesLine.SetRange(
             "Document Type",
             SalesHeader."Document Type");
 
-
         SalesLine.SetRange(
             "Document No.",
             SalesHeader."No.");
-
 
         SalesLine.SetRange(
             Description,
             DiagnosticsLine.Description);
 
-
         exit(SalesLine.FindFirst());
-
     end;
 }
